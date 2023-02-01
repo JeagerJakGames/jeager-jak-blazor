@@ -1,5 +1,5 @@
-using jeager_jak_blazor.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 
 namespace jeager_jak_blazor.Server.Controllers
 {

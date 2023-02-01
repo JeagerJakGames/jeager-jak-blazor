@@ -1,5 +1,6 @@
 ﻿@page "/fetchdata"
-@using jeager_jak_blazor.Shared
+@using Models;
+@using jeager_jak_blazor.Shared.Models
 @inject HttpClient Http
 
 <PageTitle>Weather forecast</PageTitle>
@@ -8,9 +9,16 @@
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@if (error != null)
+{
+    <p><em>@error</em></p>
+}
+
+@if (forecasts == null || todos == null)
 {
     <p><em>Loading...</em></p>
+    <p>@if(todos != null) @todos.Length</p>
+    <p>@if(forecasts != null) @forecasts.Length</p>
 }
 else
 {
@@ -35,13 +43,45 @@ else
             }
         </tbody>
     </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var todo in todos)
+            {
+                <tr>
+                    <td>@todo.Id.ToString()</td>
+                    <td>@todo.Title</td>
+                    <td>@todo.Description</td>
+                    <td>@todo.Type</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 @code {
     private WeatherForecast[]? forecasts;
+    private ToDo[]? todos;
+    private string? error;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+        try
+        {
+            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
+            todos = await Http.GetFromJsonAsync<ToDo[]>("api/ToDo");
+        }
+        catch(Exception ex)
+        {
+            error = ex.Message;
+        }
+
     }
 }

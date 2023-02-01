@@ -1,4 +1,4 @@
-namespace jeager_jak_blazor.Shared
+namespace Models
 {
     public class WeatherForecast
     {
